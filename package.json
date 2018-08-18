@@ -1,0 +1,53 @@
+{
+  "name": "stash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "generate:lock": "npm run clean && rm -f package-lock.json && npm install",
+    "lint": "eslint .",
+    "start": "node index.js",
+    "test:unit": "PORT=1338 mocha test/ --reporter=dot",
+    "watch:lint": "nodemon --exec npm run lint",
+    "watch:unit": "nodemon --exec npm run test:unit",
+    "watch:server": "nodemon --exec npm start"
+  },
+  "engines": {
+    "node": "10.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zpenka/stash.git"
+  },
+  "author": "zpenka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zpenka/stash/issues"
+  },
+  "homepage": "https://github.com/zpenka/stash#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "cli": "^1.0.1",
+    "config": "^1.28.1",
+    "express": "^4.14.0",
+    "knex": "^0.13.0",
+    "lodash": "^4.17.2",
+    "moment": "^2.18.1",
+    "pg": "^6.1.2",
+    "request-promise": "^4.2.2",
+    "winston": "^2.3.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.11.0",
+    "sinon": "^4.1.3",
+    "sinon-chai": "^2.14.0",
+    "supertest": "^3.1.0"
+  }
+}

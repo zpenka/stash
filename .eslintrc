@@ -1,0 +1,22 @@
+{
+  "extends": "airbnb/base",
+  "rules": {
+    "comma-dangle": 0,
+    "no-param-reassign": 0,
+    "no-multi-assign": 0,
+    "no-plusplus": 0,
+    "no-unused-expressions": 0,
+    "arrow-body-style": 0,
+    "func-names": 0,
+    "space-before-function-paren": 0,
+  },
+  "globals": {
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false,
+    "context": false
+  }
+}
