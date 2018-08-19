@@ -71,6 +71,11 @@ describe('lib/net', () => {
 
         expect(show).to.deep.equal({
           date: '1997-12-29',
+          venue: {
+            identifier: 'Madison Square Garden',
+            country: 'usa',
+            province: 'ny',
+          },
           setlist: {
             1: [
               'Nicu',

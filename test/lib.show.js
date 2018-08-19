@@ -12,7 +12,7 @@ describe('lib/show', () => {
       date: '1997-12-29',
       venue: {
         identifier: 'Madison Square Garden',
-        country: 'us',
+        country: 'usa',
         province: 'ny',
       },
       setlist: {
@@ -63,7 +63,7 @@ describe('lib/show', () => {
           expect(rows).to.deep.equal([
             {
               identifier: 'Madison Square Garden',
-              country: 'us',
+              country: 'usa',
               province: 'ny',
             },
           ]);
@@ -400,7 +400,7 @@ describe('lib/show', () => {
               province: 'ny',
             };
 
-            return db('venues').insert(venue).then((result) => {
+            return db('venues').insert(venue).then(() => {
               return db('venues').select().then((result) => {
                 return result[0].id;
               });
