@@ -70,6 +70,7 @@ describe('lib/net', () => {
         ]);
 
         expect(show).to.deep.equal({
+          date: '1997-12-29',
           setlist: {
             1: [
               'Nicu',

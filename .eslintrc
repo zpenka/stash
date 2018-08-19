@@ -10,6 +10,7 @@
     "func-names": 0,
     "space-before-function-paren": 0,
     "arrow-parens": 0,
+    "no-shadow": 0,
   },
   "globals": {
     "describe": false,
