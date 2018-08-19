@@ -8,9 +8,9 @@
     "generate:lock": "npm run clean && rm -f package-lock.json && npm install",
     "lint": "eslint .",
     "start": "node index.js",
-    "test:unit": "PORT=1338 mocha test/ --reporter=dot",
+    "test": "PORT=1338 mocha test/ --reporter=dot",
     "watch:lint": "nodemon --exec npm run lint",
-    "watch:unit": "nodemon --exec npm run test:unit",
+    "watch:test": "nodemon --exec npm test",
     "watch:server": "nodemon --exec npm start"
   },
   "engines": {
@@ -32,10 +32,12 @@
     "cli": "^1.0.1",
     "config": "^1.28.1",
     "express": "^4.14.0",
+    "himalaya": "^1.1.0",
     "knex": "^0.13.0",
     "lodash": "^4.17.2",
     "moment": "^2.18.1",
     "pg": "^6.1.2",
+    "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "winston": "^2.3.0"
   },
@@ -45,6 +47,7 @@
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^5.2.0",
+    "nock": "^9.6.1",
     "nodemon": "^1.11.0",
     "sinon": "^4.1.3",
     "sinon-chai": "^2.14.0",
