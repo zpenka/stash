@@ -1,4 +1,7 @@
 # stash
+Loads show information into a database
+
+Eventually will serve show information/performance aggregations
 
 ## development
 
