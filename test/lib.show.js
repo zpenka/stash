@@ -1,9 +1,7 @@
 const expect = require('chai').expect;
 
 const sinon = require('./helper').sinon;
-
 const db = require('../db');
-
 const show = require('../lib/show');
 const net = require('../lib/net');
 
@@ -11,6 +9,11 @@ describe('lib/show', () => {
   beforeEach(() => {
     sinon.stub(net, 'getShow').resolves({
       date: '1997-12-29',
+      venue: {
+        identifier: 'Madison Square Garden',
+        country: 'us',
+        province: 'ny',
+      },
       setlist: {
         1: [
           'Nicu',
@@ -51,11 +54,51 @@ describe('lib/show', () => {
       });
     });
 
+    it('persists venue data to the database', () => {
+      return show.sync('1997-12-29').then(() => {
+        const columns = ['identifier', 'country', 'province'];
+
+        return db('venues').select(columns).then((rows) => {
+          expect(rows).to.deep.equal([
+            {
+              identifier: 'Madison Square Garden',
+              country: 'us',
+              province: 'ny',
+            },
+          ]);
+        });
+      });
+    });
+
+    context('when the venue is already in the database', () => {
+      beforeEach(() => {
+        return db('venues')
+        .insert({
+          identifier: 'Madison Square Garden',
+          country: 'us',
+          province: 'ny',
+        });
+      });
+
+      it('does not write new data to the database', () => {
+        return show.sync('1997-12-29').then((result) => {
+          expect(result).to.deep.equal({
+            success: true,
+            reason: '',
+          });
+
+          return db('venues').select().then((rows) => {
+            expect(rows.length).to.equal(1);
+          });
+        });
+      });
+    });
+
     it('persists the show data to the database', () => {
       return show.sync('1997-12-29').then(() => {
         const columns = ['date', 'year', 'month', 'day'];
 
-        return db.select(columns).from('shows').then((rows) => {
+        return db('shows').select(columns).then((rows) => {
           expect(rows).to.deep.equal([
             {
               date: '1997-12-29',
@@ -70,14 +113,14 @@ describe('lib/show', () => {
 
     context('when the show is already in the database', () => {
       beforeEach(() => {
-        return db
+        return db('shows')
         .insert({
           date: '1997-12-29',
           year: 1997,
           month: 12,
           day: 29,
-        })
-        .into('shows');
+          venue_id: 1,
+        });
       });
 
       it('resolves a status object', () => {
@@ -91,7 +134,7 @@ describe('lib/show', () => {
 
       it('does not write new data to the database', () => {
         return show.sync('1997-12-29').then(() => {
-          return db.select().from('shows').then((rows) => {
+          return db('shows').select().then((rows) => {
             expect(rows.length).to.equal(1);
           });
         });
