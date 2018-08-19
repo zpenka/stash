@@ -183,6 +183,81 @@ describe('lib/show', () => {
       });
     });
 
+    it('persists song data to the database', () => {
+      return show.sync('1997-12-29').then(() => {
+        const columns = ['identifier'];
+
+        return db('songs').select(columns).then((rows) => {
+          expect(rows).to.deep.equal([
+            {
+              identifier: 'Nicu',
+            },
+            {
+              identifier: 'Golgi Apparatus',
+            },
+            {
+              identifier: 'Crossroads',
+            },
+            {
+              identifier: 'Cars Trucks Buses',
+            },
+            {
+              identifier: 'Train Song',
+            },
+            {
+              identifier: 'Theme From The Bottom',
+            },
+            {
+              identifier: 'Fluffhead',
+            },
+            {
+              identifier: 'Dirt',
+            },
+            {
+              identifier: 'Run Like An Antelope',
+            },
+            {
+              identifier: 'Down With Disease',
+            },
+            {
+              identifier: 'David Bowie',
+            },
+            {
+              identifier: 'Possum',
+            },
+            {
+              identifier: 'You Enjoy Myself',
+            },
+            {
+              identifier: 'Good Times Bad Times',
+            },
+          ]);
+        });
+      });
+    });
+
+    context('when a song is already in the database', () => {
+      beforeEach(() => {
+        return db('songs')
+        .insert({
+          identifier: 'You Enjoy Myself',
+        });
+      });
+
+      it('handles it gracfully', () => {
+        return show.sync('1997-12-29').then((result) => {
+          expect(result).to.deep.equal({
+            success: true,
+            reason: '',
+          });
+
+          return db('songs').select().then((rows) => {
+            expect(rows.length).to.equal(14);
+          });
+        });
+      });
+    });
+
     context('when .net is unavailable', () => {
       beforeEach(() => {
         net.getShow.rejects(new Error('fake-net-error'));
