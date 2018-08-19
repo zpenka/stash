@@ -3,6 +3,7 @@ const request = require('request-promise');
 const nock = require('nock');
 const sinon = require('./helper').sinon;
 const config = require('config');
+const error = require('../lib/error');
 
 const net = require('../lib/net');
 
@@ -89,6 +90,47 @@ describe('lib/net', () => {
           Encore: [
             'Good Times Bad Times',
           ],
+        });
+      });
+    });
+
+    context('when .net is down', () => {
+      it('bubbles up an error', (done) => {
+        nock(baseUrl)
+          .get('/setlists/get')
+          .query({
+            apikey,
+            showdate: '1997-12-29',
+          })
+          .reply(500, 'Internal Server Error');
+
+        net.getSetlistForShow('1997-12-29').asCallback((err) => {
+          expect(err).to.exist;
+
+          expect(err.statusCode).to.equal(500);
+
+          return done();
+        });
+      });
+    });
+
+    context('when authentication is not valid', () => {
+      it('bubbles up a user error', (done) => {
+        nock(baseUrl)
+          .get('/setlists/get')
+          .query({
+            apikey,
+            showdate: '1997-12-29',
+          })
+          .reply(400, 'Authentication error');
+
+        net.getSetlistForShow('1997-12-29').asCallback((err) => {
+          expect(err).to.exist;
+
+          expect(err).to.be.instanceOf(error.UserError);
+          expect(err.message).to.contain('Invalid .net credentials');
+
+          return done();
         });
       });
     });
