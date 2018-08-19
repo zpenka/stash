@@ -7,8 +7,8 @@ const error = require('../lib/error');
 
 const net = require('../lib/net');
 
-const apikey = config.phishnet.apikey;
-const baseUrl = config.phishnet.baseUrl;
+const apikey = config.net.apikey;
+const baseUrl = config.net.baseUrl;
 
 describe('lib/net', () => {
   describe('.getSetlistForShow', () => {

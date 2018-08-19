@@ -6,7 +6,7 @@ module.exports = {
     password: 'stash',
     ssl: false,
   },
-  phishnet: {
+  net: {
     baseUrl: 'https://api.phish.testing.net/v3',
     apikey: 'fake-apikey',
   },
