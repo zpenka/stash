@@ -17,5 +17,7 @@ beforeEach(() => {
   }
 
   // Clear db rows in between each test
-  return knexCleaner.clean(db);
+  return db.migrate.latest().then(() => {
+    return knexCleaner.clean(db);
+  });
 });

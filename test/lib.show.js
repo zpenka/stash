@@ -141,6 +141,48 @@ describe('lib/show', () => {
       });
     });
 
+    it('persists set data to the database', () => {
+      return show.sync('1997-12-29').then(() => {
+        const columns = ['identifier'];
+
+        return db('sets').select(columns).then((rows) => {
+          expect(rows).to.deep.equal([
+            {
+              identifier: '1',
+            },
+            {
+              identifier: '2',
+            },
+            {
+              identifier: 'Encore',
+            },
+          ]);
+        });
+      });
+    });
+
+    context('when a set is already in the database', () => {
+      beforeEach(() => {
+        return db('sets')
+        .insert({
+          identifier: '1',
+        });
+      });
+
+      it('handles it gracefully', () => {
+        return show.sync('1997-12-29').then((result) => {
+          expect(result).to.deep.equal({
+            success: true,
+            reason: '',
+          });
+
+          return db('sets').select().then((rows) => {
+            expect(rows.length).to.equal(3);
+          });
+        });
+      });
+    });
+
     context('when .net is unavailable', () => {
       beforeEach(() => {
         net.getShow.rejects(new Error('fake-net-error'));
