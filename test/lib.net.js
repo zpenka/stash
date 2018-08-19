@@ -11,7 +11,7 @@ const apikey = config.net.apikey;
 const baseUrl = config.net.baseUrl;
 
 describe('lib/net', () => {
-  describe('.getSetlistForShow', () => {
+  describe('.getShow', () => {
     beforeEach(() => {
       sinon.spy(request, 'get');
     });
@@ -54,7 +54,7 @@ describe('lib/net', () => {
         })
         .reply(200, response);
 
-      return net.getSetlistForShow('1997-12-29').then((setlist) => {
+      return net.getShow('1997-12-29').then((show) => {
         expect(request.get).to.have.callCount(1);
         expect(request.get.args).to.deep.equal([
           [
@@ -69,27 +69,29 @@ describe('lib/net', () => {
           ]
         ]);
 
-        expect(setlist).to.deep.equal({
-          1: [
-            'Nicu',
-            'Golgi Apparatus',
-            'Crossroads',
-            'Cars Trucks Buses',
-            'Train Song',
-            'Theme From The Bottom',
-            'Fluffhead',
-            'Dirt',
-            'Run Like An Antelope',
-          ],
-          2: [
-            'Down With Disease',
-            'David Bowie',
-            'Possum',
-            'You Enjoy Myself',
-          ],
-          Encore: [
-            'Good Times Bad Times',
-          ],
+        expect(show).to.deep.equal({
+          setlist: {
+            1: [
+              'Nicu',
+              'Golgi Apparatus',
+              'Crossroads',
+              'Cars Trucks Buses',
+              'Train Song',
+              'Theme From The Bottom',
+              'Fluffhead',
+              'Dirt',
+              'Run Like An Antelope',
+            ],
+            2: [
+              'Down With Disease',
+              'David Bowie',
+              'Possum',
+              'You Enjoy Myself',
+            ],
+            Encore: [
+              'Good Times Bad Times',
+            ],
+          },
         });
       });
     });
@@ -104,7 +106,7 @@ describe('lib/net', () => {
           })
           .reply(500, 'Internal Server Error');
 
-        net.getSetlistForShow('1997-12-29').asCallback((err) => {
+        net.getShow('1997-12-29').asCallback((err) => {
           expect(err).to.exist;
 
           expect(err.statusCode).to.equal(500);
@@ -124,7 +126,7 @@ describe('lib/net', () => {
           })
           .reply(400, 'Authentication error');
 
-        net.getSetlistForShow('1997-12-29').asCallback((err) => {
+        net.getShow('1997-12-29').asCallback((err) => {
           expect(err).to.exist;
 
           expect(err).to.be.instanceOf(error.UserError);
