@@ -11,6 +11,87 @@ const apikey = config.net.apikey;
 const baseUrl = config.net.baseUrl;
 
 describe('lib/net', () => {
+  describe('.getShowsForYear', () => {
+    beforeEach(() => {
+      sinon.spy(request, 'post');
+    });
+
+    it('retrieves the show dates and returns an array of dates for a year', () => {
+      const response = {
+        error_code: 0,
+        error_message: null,
+        response: {
+          count: 14,
+          data: [
+            {
+              artistid: '1',
+              artistlink: 'http://phish.net/setlists/phish',
+              billed_as: 'Phish',
+              link: 'http://phish.net/setlists/phish-november-30-1997-worcester-centrum-centre-worcester-ma-usa.html',
+              location: 'Worcester, MA, USA',
+              setlistnotes: 'Funky Bitch and Stash were unfinished. Wolfman&rsquo;s included a heavy metal style jam, with a Heartbreaker tease from Mike, and Trey quoting the lyrics to Sanity and Esther. Them Changes made its Phish debut at this show.',
+              showdate: '1997-11-30',
+              showid: 1252691618,
+              tour_when: '1997 Fall',
+              tourid: 37,
+              tourname: '1997 Fall Tour (a.k.a. Phish Destroys America)',
+              venue: 'The Centrum',
+              venueid: 241,
+            },
+            {
+              artistid: '1',
+              artistlink: 'http://phish.net/setlists/phish',
+              billed_as: 'Phish',
+              link: 'http://phish.net/setlists/phish-november-29-1997-worcester-centrum-centre-worcester-ma-usa.html',
+              location: 'Worcester, MA, USA',
+              setlistnotes: 'This Runaway Jim is one of the longest versions of any song ever played by Phish. It ran slightly under an hour and included Beauty of My Dreams, Harry Hood, and Super Bad&nbsp;teases and a strong Weekapaug jam where the entire melody of Weekapaug was played. Buffalo Bill was announced as Fish&rsquo;s favorite song. Moby Dick was performed for the first time since February 19, 1993 (435 shows) and featured Trey imitating Robert Plant&rsquo;s intro to Moby Dick from the album&nbsp;<em>The Song Remains the Same</em>.',
+              showdate: '1997-11-29',
+              showid: 1252687698,
+              tour_when: '1997 Fall',
+              tourid: 37,
+              tourname: '1997 Fall Tour (a.k.a. Phish Destroys America)',
+              venue: 'The Centrum',
+              venueid: 241,
+            },
+            {
+              artistid: '1',
+              artistlink: 'http://phish.net/setlists/phish',
+              billed_as: 'Not Phish',
+              link: 'http://phish.net/setlists/phish-november-28-1997-worcester-centrum-centre-worcester-ma-usa.html',
+              location: 'Worcester, MA, USA',
+              setlistnotes: 'YEM featured Crosseyed and Painless teases, did not include the bass and drums segment, and ended with a shortened vocal jam that segued into I Didn&rsquo;t Know.',
+              showdate: '1997-11-28',
+              showid: 1252685912,
+              tour_when: '1997 Fall',
+              tourid: 37,
+              tourname: '1997 Fall Tour (a.k.a. Phish Destroys America)',
+              venue: 'The Centrum',
+              venueid: 241,
+            },
+          ]
+        }
+      };
+
+      nock(baseUrl)
+      .post('/shows/query?apikey=fake-apikey&year=1997&order=DESC')
+      .reply(200, response);
+
+      return net.getShowsForYear('1997').then((shows) => {
+        expect(request.post).to.have.callCount(1);
+        expect(request.post.args).to.deep.equal([
+          [
+            {
+              json: true,
+              uri: 'https://api.phish.testing.net/v3/shows/query?apikey=fake-apikey&year=1997&order=DESC',
+            },
+          ]
+        ]);
+
+        expect(shows).to.deep.equal(['1997-11-29', '1997-11-30']);
+      });
+    });
+  });
+
   describe('.getShow', () => {
     beforeEach(() => {
       sinon.spy(request, 'get');
