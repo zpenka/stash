@@ -9,7 +9,11 @@ exports.up = function(knex) {
       song_number_in_set INT NOT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       UNIQUE (show_id, set_id, song_id, song_number_in_set)
-    )
+    );
+    CREATE INDEX ix_song_performances_song_id ON song_performances (song_id);
+    CREATE INDEX ix_song_performances_set_id ON song_performances (set_id);
+    CREATE INDEX ix_song_performances_show_id ON song_performances (show_id);
+    CREATE INDEX ix_song_performances_song_number_in_set ON song_performances (song_number_in_set);
   `;
 
   return knex.raw(sql);

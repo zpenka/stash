@@ -8,6 +8,11 @@ chai.use(require('sinon-chai'));
 
 exports.sinon = sinon.sandbox.create();
 
+before(() => {
+  // Setup schema at beginning of test run
+  return db.migrate.latest();
+});
+
 beforeEach(() => {
   // Setup sinon sandbox for spies and stubs
   if (exports.sinon) {
@@ -17,7 +22,5 @@ beforeEach(() => {
   }
 
   // Clear db rows in between each test
-  return db.migrate.latest().then(() => {
-    return knexCleaner.clean(db);
-  });
+  return knexCleaner.clean(db);
 });
