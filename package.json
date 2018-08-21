@@ -8,7 +8,7 @@
     "generate:lock": "npm run clean && rm -f package-lock.json && npm install",
     "lint": "eslint .",
     "start": "node index.js",
-    "test": "PORT=1338 mocha test/ --reporter=dot",
+    "test": "NODE_ENV=test PORT=1338 mocha test/ --reporter=dot",
     "watch:lint": "nodemon --exec npm run lint",
     "watch:test": "nodemon --exec npm test",
     "watch:server": "nodemon --exec npm start"
