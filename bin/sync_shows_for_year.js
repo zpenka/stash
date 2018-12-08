@@ -2,7 +2,7 @@ const P = require('bluebird');
 const cli = require('cli');
 
 const log = require('../lib/log');
-const net = require('../lib/net');
+const phishin = require('../lib/phishin');
 const show = require('../lib/show');
 
 const options = cli.parse({
@@ -26,7 +26,7 @@ if (!sleep) {
 }
 
 const syncShowsForYear = (year) => {
-  return net.getShowsForYear(year).then((showDates) => {
+  return phishin.getShowsForYear(year).then((showDates) => {
     return P.each(showDates, (showDate) => {
       return show.sync(showDate)
       .then(() => {
