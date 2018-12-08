@@ -13,7 +13,7 @@ describe('lib/show', () => {
       venue: {
         identifier: 'Madison Square Garden',
         country: 'usa',
-        province: 'ny',
+        location: 'ny',
       },
       setlist: {
         1: [
@@ -57,14 +57,14 @@ describe('lib/show', () => {
 
     it('persists venue data to the database', () => {
       return show.sync('1997-12-29').then(() => {
-        const columns = ['identifier', 'country', 'province'];
+        const columns = ['identifier', 'country', 'location'];
 
         return db('venues').select(columns).then((rows) => {
           expect(rows).to.deep.equal([
             {
               identifier: 'Madison Square Garden',
               country: 'usa',
-              province: 'ny',
+              location: 'ny',
             },
           ]);
         });
@@ -77,7 +77,7 @@ describe('lib/show', () => {
         .insert({
           identifier: 'Madison Square Garden',
           country: 'us',
-          province: 'ny',
+          location: 'ny',
         });
       });
 
@@ -397,7 +397,7 @@ describe('lib/show', () => {
             const venue = {
               identifier: 'Madison Square Garden',
               country: 'us',
-              province: 'ny',
+              location: 'ny',
             };
 
             return db('venues').insert(venue).then(() => {
