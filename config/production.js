@@ -1,6 +1,12 @@
 module.exports = {
-  net: {
-    baseUrl: 'https://api.phish.net/v3',
-    apikey: 'DONT YET HAVE ONE',
+  database: {
+    host: 'localhost',
+    database: 'stash',
+    user: 'stash',
+    password: 'stash',
+    ssl: false,
+  },
+  phishin: {
+    baseUrl: 'http://phish.in/api/v1',
   },
 };

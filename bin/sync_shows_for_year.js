@@ -2,12 +2,12 @@ const P = require('bluebird');
 const cli = require('cli');
 
 const log = require('../lib/log');
-const net = require('../lib/net');
+const phishin = require('../lib/phishin');
 const show = require('../lib/show');
 
 const options = cli.parse({
   year: ['y', 'Year to sync', 'int', false],
-  sleepTime: ['s', 'Seconds to sleep between syncs', 'int', 60],
+  sleepTime: ['s', 'Seconds to sleep between syncs', 'int', 1],
 });
 
 if (!options.year) {
@@ -26,12 +26,9 @@ if (!sleep) {
 }
 
 const syncShowsForYear = (year) => {
-  return net.getShowsForYear(year).then((showDates) => {
-    return P.each(showDates, (showDate) => {
-      return show.sync(showDate)
-      .then(() => {
-        return P.delay(sleep);
-      });
+  return phishin.getShowIdsForYear(year).then((showIds) => {
+    return P.each(showIds, (showId) => {
+      return show.sync(showId).then(() => P.delay(sleep));
     });
   })
   .then(() => {

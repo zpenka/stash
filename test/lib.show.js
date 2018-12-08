@@ -4,16 +4,16 @@ const P = require('bluebird');
 const sinon = require('./helper').sinon;
 const db = require('../db');
 const show = require('../lib/show');
-const net = require('../lib/net');
+const phishin = require('../lib/phishin');
 
 describe('lib/show', () => {
   beforeEach(() => {
-    sinon.stub(net, 'getShow').resolves({
+    sinon.stub(phishin, 'getShow').resolves({
       date: '1997-12-29',
       venue: {
         identifier: 'Madison Square Garden',
         country: 'usa',
-        province: 'ny',
+        location: 'ny',
       },
       setlist: {
         1: [
@@ -33,7 +33,7 @@ describe('lib/show', () => {
           'Possum',
           'You Enjoy Myself',
         ],
-        Encore: [
+        E: [
           'Good Times Bad Times',
         ],
       },
@@ -48,8 +48,8 @@ describe('lib/show', () => {
           reason: '',
         });
 
-        expect(net.getShow).to.have.callCount(1);
-        expect(net.getShow.args).to.deep.equal([
+        expect(phishin.getShow).to.have.callCount(1);
+        expect(phishin.getShow.args).to.deep.equal([
           ['1997-12-29'],
         ]);
       });
@@ -57,14 +57,14 @@ describe('lib/show', () => {
 
     it('persists venue data to the database', () => {
       return show.sync('1997-12-29').then(() => {
-        const columns = ['identifier', 'country', 'province'];
+        const columns = ['identifier', 'country', 'location'];
 
         return db('venues').select(columns).then((rows) => {
           expect(rows).to.deep.equal([
             {
               identifier: 'Madison Square Garden',
               country: 'usa',
-              province: 'ny',
+              location: 'ny',
             },
           ]);
         });
@@ -77,7 +77,7 @@ describe('lib/show', () => {
         .insert({
           identifier: 'Madison Square Garden',
           country: 'us',
-          province: 'ny',
+          location: 'ny',
         });
       });
 
@@ -155,7 +155,7 @@ describe('lib/show', () => {
               identifier: '2',
             },
             {
-              identifier: 'Encore',
+              identifier: 'E',
             },
           ]);
         });
@@ -357,7 +357,7 @@ describe('lib/show', () => {
             },
             {
               song: 'Good Times Bad Times',
-              set: 'Encore',
+              set: 'E',
               song_number: 1,
               show_date: '1997-12-29',
             },
@@ -397,7 +397,7 @@ describe('lib/show', () => {
             const venue = {
               identifier: 'Madison Square Garden',
               country: 'us',
-              province: 'ny',
+              location: 'ny',
             };
 
             return db('venues').insert(venue).then(() => {
@@ -452,16 +452,16 @@ describe('lib/show', () => {
       });
     });
 
-    context('when .net is unavailable', () => {
+    context('when .phishin is unavailable', () => {
       beforeEach(() => {
-        net.getShow.rejects(new Error('fake-net-error'));
+        phishin.getShow.rejects(new Error('fake-phishin-error'));
       });
 
       it('resolves a status object with details', () => {
         return show.sync('1997-12-29').then((result) => {
           expect(result).to.deep.equal({
             success: false,
-            reason: 'fake-net-error',
+            reason: 'fake-phishin-error',
           });
         });
       });
