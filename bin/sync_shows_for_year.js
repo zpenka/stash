@@ -29,18 +29,26 @@ const syncShowsForYear = (year) => {
   return phishin.getShowIdsForYear(year).then((showIds) => {
     return P.each(showIds, (showId) => {
       return show.sync(showId).then(() => P.delay(sleep));
+    }).then(() => {
+      log.info(`All data successfully synced for year ${year}`);
     });
-  })
-  .then(() => {
-    log.info(`All shows successfully synced for year ${year}`);
-
-    process.exit(0);
-  })
-  .catch((err) => {
-    log.error(err);
-
-    process.exit(1);
   });
 };
 
-syncShowsForYear(options.year);
+const main = () => {
+  return phishin.getYears().then((years) => {
+    return P.each(years, syncShowsForYear);
+  });
+};
+
+main()
+.then(() => {
+  log.info('All data successfully synced');
+
+  process.exit(0);
+})
+.catch((err) => {
+  log.error(err);
+
+  process.exit(1);
+});

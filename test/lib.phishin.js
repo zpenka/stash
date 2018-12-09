@@ -13,6 +13,90 @@ describe('lib/phishin', () => {
     baseUrl = config.phishin.baseUrl;
   });
 
+  describe('.getYears', () => {
+    beforeEach(() => {
+      sinon.spy(request, 'get');
+    });
+
+    it('retrieves the show dates and returns an array of show ids for a year', () => {
+      const mockResponse = {
+        success: true,
+        data: [
+          '1983-1987',
+          '1988',
+          '1989',
+          '1990',
+          '1991',
+          '1992',
+          '1993',
+          '1994',
+          '1995',
+          '1996',
+          '1997',
+          '1998',
+          '1999',
+          '2000',
+          '2002',
+          '2003',
+          '2004',
+          '2009',
+          '2010',
+          '2011',
+          '2012',
+          '2013',
+          '2014',
+          '2015',
+          '2016',
+          '2017',
+          '2018'
+        ]
+      };
+
+      nock(baseUrl).get('/years').reply(200, mockResponse);
+
+      return phishin.getYears().then((years) => {
+        expect(request.get).to.have.callCount(1);
+        expect(request.get.args).to.deep.equal([
+          [
+            {
+              json: true,
+              uri: `${baseUrl}/years`,
+            },
+          ]
+        ]);
+
+        expect(years).to.deep.equal([
+          '1988',
+          '1989',
+          '1990',
+          '1991',
+          '1992',
+          '1993',
+          '1994',
+          '1995',
+          '1996',
+          '1997',
+          '1998',
+          '1999',
+          '2000',
+          '2002',
+          '2003',
+          '2004',
+          '2009',
+          '2010',
+          '2011',
+          '2012',
+          '2013',
+          '2014',
+          '2015',
+          '2016',
+          '2017',
+          '2018'
+        ]);
+      });
+    });
+  });
+
   describe('.getShowIdsForYear', () => {
     beforeEach(() => {
       sinon.spy(request, 'get');
@@ -56,7 +140,7 @@ describe('lib/phishin', () => {
     });
 
     it('retrieves the show data and returns the setlist', () => {
-      const response = {
+      const mockResponse = {
         success: true,
         total_entries: 1,
         total_pages: 1,
@@ -86,7 +170,7 @@ describe('lib/phishin', () => {
               likes_count: 1,
               slug: 'nicu',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/368/28368.mp3',
+              mp3: '/000/028/368/28368.mp3',
               song_ids: [
                 547
               ],
@@ -104,7 +188,7 @@ describe('lib/phishin', () => {
               likes_count: 2,
               slug: 'golgi-apparatus',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/369/28369.mp3',
+              mp3: '/000/028/369/28369.mp3',
               song_ids: [
                 304
               ],
@@ -122,7 +206,7 @@ describe('lib/phishin', () => {
               likes_count: 5,
               slug: 'crossroads',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/370/28370.mp3',
+              mp3: '/000/028/370/28370.mp3',
               song_ids: [
                 179
               ],
@@ -140,7 +224,7 @@ describe('lib/phishin', () => {
               likes_count: 3,
               slug: 'cars-trucks-buses',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/371/28371.mp3',
+              mp3: '/000/028/371/28371.mp3',
               song_ids: [
                 138
               ],
@@ -158,7 +242,7 @@ describe('lib/phishin', () => {
               likes_count: 0,
               slug: 'train-song',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/372/28372.mp3',
+              mp3: '/000/028/372/28372.mp3',
               song_ids: [
                 790
               ],
@@ -178,7 +262,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/373/28373.mp3',
+              mp3: '/000/028/373/28373.mp3',
               song_ids: [
                 770
               ],
@@ -196,7 +280,7 @@ describe('lib/phishin', () => {
               likes_count: 5,
               slug: 'fluffhead',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/374/28374.mp3',
+              mp3: '/000/028/374/28374.mp3',
               song_ids: [
                 264
               ],
@@ -214,7 +298,7 @@ describe('lib/phishin', () => {
               likes_count: 1,
               slug: 'dirt',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/375/28375.mp3',
+              mp3: '/000/028/375/28375.mp3',
               song_ids: [
                 203
               ],
@@ -234,7 +318,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/376/28376.mp3',
+              mp3: '/000/028/376/28376.mp3',
               song_ids: [
                 651
               ],
@@ -254,7 +338,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/377/28377.mp3',
+              mp3: '/000/028/377/28377.mp3',
               song_ids: [
                 225
               ],
@@ -274,7 +358,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/378/28378.mp3',
+              mp3: '/000/028/378/28378.mp3',
               song_ids: [
                 979
               ],
@@ -294,7 +378,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/379/28379.mp3',
+              mp3: '/000/028/379/28379.mp3',
               song_ids: [
                 595
               ],
@@ -314,7 +398,7 @@ describe('lib/phishin', () => {
               tags: [
                 'Jamcharts'
               ],
-              mp3: 'https://phish.in/audio/000/028/380/28380.mp3',
+              mp3: '/000/028/380/28380.mp3',
               song_ids: [
                 797
               ],
@@ -332,7 +416,7 @@ describe('lib/phishin', () => {
               likes_count: 9,
               slug: 'you-enjoy-myself',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/381/28381.mp3',
+              mp3: '/000/028/381/28381.mp3',
               song_ids: [
                 879
               ],
@@ -350,7 +434,7 @@ describe('lib/phishin', () => {
               likes_count: 1,
               slug: 'good-times-bad-times',
               tags: [],
-              mp3: 'https://phish.in/audio/000/028/382/28382.mp3',
+              mp3: '/000/028/382/28382.mp3',
               song_ids: [
                 306
               ],
@@ -361,7 +445,7 @@ describe('lib/phishin', () => {
         }
       };
 
-      nock(baseUrl).get('/shows/123').reply(200, response);
+      nock(baseUrl).get('/shows/123').reply(200, mockResponse);
 
       return phishin.getShow(123).then((show) => {
         expect(request.get).to.have.callCount(1);
@@ -376,6 +460,7 @@ describe('lib/phishin', () => {
 
         expect(show).to.deep.equal({
           date: '1997-12-29',
+          era: '1.0',
           venue: {
             identifier: 'Madison Square Garden',
             country: 'usa',
@@ -383,25 +468,25 @@ describe('lib/phishin', () => {
           },
           setlist: {
             1: [
-              'NICU',
-              'Golgi Apparatus',
-              'Crossroads',
-              'Cars Trucks Buses',
-              'Train Song',
-              'Theme From the Bottom',
-              'Fluffhead',
-              'Dirt',
-              'Run Like an Antelope',
+              { title: 'NICU', url: '/000/028/368/28368.mp3' },
+              { title: 'Golgi Apparatus', url: '/000/028/369/28369.mp3' },
+              { title: 'Crossroads', url: '/000/028/370/28370.mp3' },
+              { title: 'Cars Trucks Buses', url: '/000/028/371/28371.mp3' },
+              { title: 'Train Song', url: '/000/028/372/28372.mp3' },
+              { title: 'Theme From the Bottom', url: '/000/028/373/28373.mp3' },
+              { title: 'Fluffhead', url: '/000/028/374/28374.mp3' },
+              { title: 'Dirt', url: '/000/028/375/28375.mp3' },
+              { title: 'Run Like an Antelope', url: '/000/028/376/28376.mp3' },
             ],
             2: [
-              'Down with Disease',
-              'David Bowie',
-              'Possum',
-              'Tube',
-              'You Enjoy Myself',
+              { title: 'Down with Disease', url: '/000/028/377/28377.mp3' },
+              { title: 'David Bowie', url: '/000/028/378/28378.mp3' },
+              { title: 'Possum', url: '/000/028/379/28379.mp3' },
+              { title: 'Tube', url: '/000/028/380/28380.mp3' },
+              { title: 'You Enjoy Myself', url: '/000/028/381/28381.mp3' },
             ],
             E: [
-              'Good Times Bad Times',
+              { title: 'Good Times Bad Times', url: '/000/028/382/28382.mp3' },
             ],
           },
         });

@@ -7,6 +7,7 @@ exports.up = function(knex) {
       set_id INT NOT NULL,
       show_id INT NOT NULL,
       song_number_in_set INT NOT NULL,
+      url VARCHAR(255) DEFAULT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       UNIQUE (show_id, set_id, song_id, song_number_in_set)
     );

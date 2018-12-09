@@ -10,6 +10,7 @@ describe('lib/show', () => {
   beforeEach(() => {
     sinon.stub(phishin, 'getShow').resolves({
       date: '1997-12-29',
+      era: '1.0',
       venue: {
         identifier: 'Madison Square Garden',
         country: 'usa',
@@ -17,24 +18,25 @@ describe('lib/show', () => {
       },
       setlist: {
         1: [
-          'Nicu',
-          'Golgi Apparatus',
-          'Crossroads',
-          'Cars Trucks Buses',
-          'Train Song',
-          'Theme From The Bottom',
-          'Fluffhead',
-          'Dirt',
-          'Run Like An Antelope',
+          { title: 'NICU', url: '/000/028/368/28368.mp3' },
+          { title: 'Golgi Apparatus', url: '/000/028/369/28369.mp3' },
+          { title: 'Crossroads', url: '/000/028/370/28370.mp3' },
+          { title: 'Cars Trucks Buses', url: '/000/028/371/28371.mp3' },
+          { title: 'Train Song', url: '/000/028/372/28372.mp3' },
+          { title: 'Theme From the Bottom', url: '/000/028/373/28373.mp3' },
+          { title: 'Fluffhead', url: '/000/028/374/28374.mp3' },
+          { title: 'Dirt', url: '/000/028/375/28375.mp3' },
+          { title: 'Run Like an Antelope', url: '/000/028/376/28376.mp3' },
         ],
         2: [
-          'Down With Disease',
-          'David Bowie',
-          'Possum',
-          'You Enjoy Myself',
+          { title: 'Down with Disease', url: '/000/028/377/28377.mp3' },
+          { title: 'David Bowie', url: '/000/028/378/28378.mp3' },
+          { title: 'Possum', url: '/000/028/379/28379.mp3' },
+          { title: 'Tube', url: '/000/028/380/28380.mp3' },
+          { title: 'You Enjoy Myself', url: '/000/028/381/28381.mp3' },
         ],
         E: [
-          'Good Times Bad Times',
+          { title: 'Good Times Bad Times', url: '/000/028/382/28382.mp3' },
         ],
       },
     });
@@ -97,7 +99,7 @@ describe('lib/show', () => {
 
     it('persists the show data to the database', () => {
       return show.sync('1997-12-29').then(() => {
-        const columns = ['date', 'year', 'month', 'day'];
+        const columns = ['date', 'year', 'month', 'day', 'era'];
 
         return db('shows').select(columns).then((rows) => {
           expect(rows).to.deep.equal([
@@ -106,6 +108,7 @@ describe('lib/show', () => {
               year: 1997,
               month: 12,
               day: 29,
+              era: '1.0',
             },
           ]);
         });
@@ -120,6 +123,7 @@ describe('lib/show', () => {
           year: 1997,
           month: 12,
           day: 29,
+          era: '1.0',
           venue_id: 1,
         });
       });
@@ -191,7 +195,7 @@ describe('lib/show', () => {
         return db('songs').select(columns).then((rows) => {
           expect(rows).to.deep.equal([
             {
-              identifier: 'Nicu',
+              identifier: 'NICU',
             },
             {
               identifier: 'Golgi Apparatus',
@@ -206,7 +210,7 @@ describe('lib/show', () => {
               identifier: 'Train Song',
             },
             {
-              identifier: 'Theme From The Bottom',
+              identifier: 'Theme From the Bottom',
             },
             {
               identifier: 'Fluffhead',
@@ -215,16 +219,19 @@ describe('lib/show', () => {
               identifier: 'Dirt',
             },
             {
-              identifier: 'Run Like An Antelope',
+              identifier: 'Run Like an Antelope',
             },
             {
-              identifier: 'Down With Disease',
+              identifier: 'Down with Disease',
             },
             {
               identifier: 'David Bowie',
             },
             {
               identifier: 'Possum',
+            },
+            {
+              identifier: 'Tube',
             },
             {
               identifier: 'You Enjoy Myself',
@@ -253,7 +260,7 @@ describe('lib/show', () => {
           });
 
           return db('songs').select().then((rows) => {
-            expect(rows.length).to.equal(14);
+            expect(rows.length).to.equal(15);
           });
         });
       });
@@ -271,6 +278,7 @@ describe('lib/show', () => {
           JOIN songs             ss ON ss.id = sp.song_id
           JOIN sets              st ON st.id = sp.set_id
           JOIN shows             sh ON sh.id = sp.show_id
+          ORDER BY set ASC, song_number ASC
         `;
 
         return db.raw(sql).then((results) => {
@@ -278,7 +286,7 @@ describe('lib/show', () => {
 
           expect(rows).to.deep.equal([
             {
-              song: 'Nicu',
+              song: 'NICU',
               set: '1',
               song_number: 1,
               show_date: '1997-12-29',
@@ -308,7 +316,7 @@ describe('lib/show', () => {
               show_date: '1997-12-29',
             },
             {
-              song: 'Theme From The Bottom',
+              song: 'Theme From the Bottom',
               set: '1',
               song_number: 6,
               show_date: '1997-12-29',
@@ -326,13 +334,13 @@ describe('lib/show', () => {
               show_date: '1997-12-29',
             },
             {
-              song: 'Run Like An Antelope',
+              song: 'Run Like an Antelope',
               set: '1',
               song_number: 9,
               show_date: '1997-12-29',
             },
             {
-              song: 'Down With Disease',
+              song: 'Down with Disease',
               set: '2',
               song_number: 1,
               show_date: '1997-12-29',
@@ -350,9 +358,15 @@ describe('lib/show', () => {
               show_date: '1997-12-29',
             },
             {
-              song: 'You Enjoy Myself',
+              song: 'Tube',
               set: '2',
               song_number: 4,
+              show_date: '1997-12-29',
+            },
+            {
+              song: 'You Enjoy Myself',
+              set: '2',
+              song_number: 5,
               show_date: '1997-12-29',
             },
             {
@@ -413,6 +427,7 @@ describe('lib/show', () => {
               year: 1997,
               month: 12,
               day: 29,
+              era: '1.0',
               venue_id: venueId,
             };
 
@@ -446,7 +461,7 @@ describe('lib/show', () => {
           });
 
           return db('song_performances').select().then((rows) => {
-            expect(rows.length).to.equal(14);
+            expect(rows.length).to.equal(15);
           });
         });
       });

@@ -7,6 +7,7 @@ exports.up = function(knex) {
       year INT NOT NULL,
       month INT NOT NULL,
       day INT NOT NULL,
+      era VARCHAR(5) NOT NULL,
       venue_id INT NOT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT NOW()
     )
